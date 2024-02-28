@@ -34,6 +34,8 @@ export interface ICSF {
     stateName: string | null;
     betweenRoad: string | null;
     andRoad: string | null;
+    phoneNumber: string | null;
+    email: string | null;
   };
   ocuppation: string | null;
   typeofDocument: string | null;
@@ -41,8 +43,7 @@ export interface ICSF {
 
 export interface CSFReaderProps {
   handleChange: (data: ICSF) => void;
-  onLoadStart: () => void;
-  onLoadEnd: () => void;
+  onLoadStart?: () => void;
   trigger: React.ReactElement<{
     onClick?: (event: ChangeEvent<HTMLInputElement>) => void;
   }>;

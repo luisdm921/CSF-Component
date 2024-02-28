@@ -1,12 +1,11 @@
 import React, { ChangeEvent, useRef } from "react";
 import { CSFReaderProps } from "./types";
-import extractText from "./utils";
+import { extractText } from "./utils";
 
 const CSFReader: React.FC<CSFReaderProps> = ({
   handleChange,
   trigger,
   onLoadStart,
-  onLoadEnd,
 }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -14,9 +13,10 @@ const CSFReader: React.FC<CSFReaderProps> = ({
     const file = e.target.files && e.target.files[0];
 
     if (file) {
-      onLoadStart();
+      if (onLoadStart) {
+        onLoadStart();
+      }
       handleChange(await extractText(file));
-      onLoadEnd();
     }
   };
   const handleTriggerClick = () => {

@@ -74,7 +74,7 @@ export const obtenerFechaNacimiento = (
 };
 
 // Función para extraer información del PDF
-const extractText = (file: File): Promise<ICSF> => {
+export const extractText = (file: File): Promise<ICSF> => {
   return new Promise(async (resolve, reject) => {
     let flag = false;
     const fileReader = new FileReader();
@@ -149,75 +149,77 @@ const extractText = (file: File): Promise<ICSF> => {
             type: items.find((item) => item.text === "Nombre (s):")
               ? "Fisica"
               : "Moral",
-            rfc: items.find((item) => item.text === "RFC:")?.content || null,
-            curp: items.find((item) => item.text === "CURP:")?.content || null,
+            rfc: items.find((item) => item.text === "RFC:")?.content.trim() || null,
+            curp: items.find((item) => item.text === "CURP:")?.content.trim() || null,
             name:
               items.find(
                 (item) =>
                   item.text === "Nombre (s):" ||
                   item.text === "Denominación/Razón Social:"
-              )?.content || null,
+              )?.content.trim() || null,
             lastName:
-              items.find((item) => item.text === "Primer Apellido:")?.content ||
+              items.find((item) => item.text === "Primer Apellido:")?.content.trim() ||
               null,
             secondLastName:
               items.find((item) => item.text === "Segundo Apellido:")
-                ?.content || null,
+                ?.content.trim() || null,
                 birthdate:
                 items.find((item) => item.text === "Nombre (s):")
-                  ? obtenerFechaNacimiento(items.find((item) => item.text === "CURP:")?.content || "")
-                  : convertirFecha(items.find((item) => item.text === "Fecha inicio de operaciones:")?.content || ""),
+                  ? obtenerFechaNacimiento(items.find((item) => item.text === "CURP:")?.content.trim() || "")
+                  : convertirFecha(items.find((item) => item.text === "Fecha inicio de operaciones:")?.content.trim() || ""),
             status:
               items.find((item) => item.text === "Estatus en el padrón:")
-                ?.content || null,
+                ?.content.trim() || null,
             statusLastChange:
               items.find(
                 (item) => item.text === "Fecha de último cambio de estado:"
-              )?.content || null,
+              )?.content.trim() || null,
             commercialName:
               items.find((item) => item.text === "Nombre Comercial:")
-                ?.content || null,
+                ?.content.trim() || null,
             address: {
               zipCode:
-                items.find((item) => item.text === "Código Postal:")?.content ||
+                items.find((item) => item.text === "Código Postal:")?.content.trim() ||
                 null,
               roadType:
                 items.find((item) => item.text === "Tipo de Vialidad:")
-                  ?.content || null,
+                  ?.content.trim() || null,
               roadName:
                 items.find((item) => item.text === "Nombre de Vialidad:")
-                  ?.content || null,
+                  ?.content.trim() || null,
               exteriorNumber:
                 items.find((item) => item.text === "Número Exterior:")
-                  ?.content || null,
+                  ?.content.trim() || null,
               interiorNumber:
                 items.find((item) => item.text === "Número Interior:")
-                  ?.content || null,
+                  ?.content.trim() || null,
               divisionName:
                 items.find((item) => item.text === "Nombre de la Colonia:")
-                  ?.content || null,
+                  ?.content.trim() || null,
               localityName:
                 items.find((item) => item.text === "Nombre de la Localidad:")
-                  ?.content || null,
+                  ?.content.trim() || null,
               municipalityName:
                 items.find(
                   (item) =>
                     item.text ===
                     "Nombre del Municipio o Demarcación Territorial:"
-                )?.content || null,
+                )?.content.trim() || null,
               stateName:
                 items.find(
                   (item) => item.text === "Nombre de la Entidad Federativa:"
-                )?.content || null,
+                )?.content.trim() || null,
               betweenRoad:
-                items.find((item) => item.text === "Entre Calle:")?.content ||
+                items.find((item) => item.text === "Entre Calle:")?.content.trim() ||
                 null,
               andRoad:
-                items.find((item) => item.text === "Y Calle:")?.content || null,
+                items.find((item) => item.text === "Y Calle:")?.content.trim() || null,
+              phoneNumber: phoneNumber( items.find((item) => item.text === "Número:")?.content.trim() || "" ),
+              email:  items.find((item) => item.text === "Correo Electrónico:")?.content.trim() || null,
             },
             ocuppation:
               items.find((item) => item.text === "Actividad Económica")
-                ?.content || null,
+                ?.content.trim() || null,
             typeofDocument:
               items.some(
                 (item) => item.text === "CONSTANCIA DE SITUACIÓN FISCAL"
@@ -243,4 +245,25 @@ const extractText = (file: File): Promise<ICSF> => {
   });
 };
 
-export default extractText;
+ const phoneNumber = (number:string) : string | null=>{
+   if(number === ""){
+    return null
+   }
+
+  const cleanNumber = number.replace(/\D/g, '');
+   
+   if (cleanNumber.length <10) {
+       return null;
+   }
+
+
+   const firstThreeDigits = cleanNumber.slice(0, 3); 
+   const nextThreeDigits = cleanNumber.slice(3, 6);
+   const remainingDigits = cleanNumber.slice(6);
+   const formattedNumber = `(${firstThreeDigits}) ${nextThreeDigits}-${remainingDigits}`;
+ 
+   return formattedNumber;
+
+
+ }
+
