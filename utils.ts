@@ -101,7 +101,7 @@ export const extractText = (file: File): Promise<ICSF> => {
 
             pageText.items.forEach((item) => {
                 if ("str" in item) {
-                  if (item.str.startsWith("Actividades Económicas")) {
+                  if (item.str.startsWith("Actividades Económicas:")) {
                     flag = true;
                   }
   
@@ -119,10 +119,13 @@ export const extractText = (file: File): Promise<ICSF> => {
                         );
                       } else {
                         return (
-                          existing.coordenada.y === item.transform[5] + 12.236 &&
+                          (existing.coordenada.y === item.transform[5] + 12.236 ||
+                           existing.coordenada.y === item.transform[5] + 12.237  ||
+                           existing.coordenada.y === item.transform[5] + 12.238  ||
+                           existing.coordenada.y === item.transform[5] + 12.239) &&
                           existing.page === page &&
                           existing.content === ""
-                        );
+                      );
                       }
                     });
   
@@ -142,6 +145,7 @@ export const extractText = (file: File): Promise<ICSF> => {
                   }
                 }
               });
+            
           }
 
           const data: ICSF = {
